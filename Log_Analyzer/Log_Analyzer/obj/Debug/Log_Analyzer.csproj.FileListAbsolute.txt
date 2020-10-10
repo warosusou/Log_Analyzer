@@ -1,0 +1,10 @@
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\bin\Debug\Log_Analyzer.exe.config
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\bin\Debug\Log_Analyzer.exe
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\bin\Debug\Log_Analyzer.pdb
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.csprojAssemblyReference.cache
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.Form1.resources
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.Properties.Resources.resources
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.csproj.GenerateResource.cache
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.csproj.CoreCompileInputs.cache
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.exe
+F:\warosusou.AD.000\Documents\Visual Studio 2019\Repos\Log_Analyzer\Log_Analyzer\obj\Debug\Log_Analyzer.pdb
