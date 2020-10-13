@@ -40,10 +40,12 @@ namespace Log_Analyzer
             DataGridViewRow[] rows = new DataGridViewRow[showing.Count];
             await Task.Run(()=> 
             {
+                double prevUnixTime = showing.First().UnixTime;
                 for (int i = 0; i < showing.Count; i++)
                 {
-                    object[] cellValues = new object[]{ showing[i].DateTime,
+                    object[] cellValues = new object[]{ showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss"),
                                                     showing[i].UnixTime,
+                                                    (showing[i].UnixTime - prevUnixTime).ToString("F4"),
                                                     showing[i].ProcessID,
                                                     showing[i].UserAddress,
                                                     showing[i].Action,
@@ -53,6 +55,7 @@ namespace Log_Analyzer
                                                     showing[i].UserID,
                                                     showing[i].ProxyStatus,
                                                     showing[i].DocumentType };
+                    prevUnixTime = showing[i].UnixTime;
                     DataGridViewRow row = new DataGridViewRow();
                     row.CreateCells(dataGridView1);
                     row.SetValues(cellValues);
@@ -68,7 +71,6 @@ namespace Log_Analyzer
         {
             pictureBox1.Visible = true;
             label1.Visible = true;
-            dataGridView1.Dock = DockStyle.None;
             dataGridView1.Visible = false;
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.BringToFront();

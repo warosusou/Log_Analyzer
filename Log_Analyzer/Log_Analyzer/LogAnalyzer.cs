@@ -13,7 +13,7 @@ namespace Log_Analyzer
         {
             var result = new List<LogData>();
             var lines =  File.ReadAllLines(filePath);
-            foreach(var l in lines)
+            foreach (var l in lines)
             {
                 bool error = false;
                 var data = l.Split(' ').Where(x => x != "").ToArray();
@@ -43,7 +43,6 @@ namespace Log_Analyzer
                                         proxyStatus,
                                         documentType));
             }
-
             return result;
         }
     }

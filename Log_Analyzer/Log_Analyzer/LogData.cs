@@ -8,7 +8,7 @@ namespace Log_Analyzer
 {
     class LogData
     {
-        public DateTime DateTime { get; }
+        public DateTimeOffset DateTimeOffset { get; }
         public double UnixTime { get; }
         public int ProcessID { get; }
         public string UserAddress { get; }
@@ -31,7 +31,7 @@ namespace Log_Analyzer
                         string proxyStatus,
                         string documentType)
         {
-            DateTime = DateTime.Now;
+            DateTimeOffset = DateTimeOffset.FromUnixTimeSeconds((long)unixTime).ToLocalTime();
             UnixTime = unixTime;
             ProcessID = processID;
             UserAddress = userAddress;
