@@ -45,7 +45,7 @@ namespace Log_Analyzer
                 {
                     object[] cellValues = new object[]{ showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss"),
                                                     showing[i].UnixTime,
-                                                    (showing[i].UnixTime - prevUnixTime).ToString("F4"),
+                                                    IntervalToString(showing[i].UnixTime - prevUnixTime),
                                                     showing[i].ProcessID,
                                                     showing[i].UserAddress,
                                                     showing[i].Action,
@@ -102,6 +102,21 @@ namespace Log_Analyzer
             label1.Visible = false;
             pictureBox1.Visible = false;
             dataGridView1.Visible = true;
+        }
+
+        private string IntervalToString(double source)
+        {
+            const string format = "+{0}s";
+            double limit = 10;
+            if (source < limit)
+                return source.ToString("F4");
+            else
+            {
+                if ((int)limit == limit)
+                    return String.Format(format, limit.ToString("F1"));
+                else
+                    return String.Format(format, limit.ToString());
+            }
         }
     }
 }
