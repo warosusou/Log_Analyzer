@@ -38,8 +38,10 @@ namespace Log_Analyzer
             dataGridView1.SuspendLayout();
             dataGridView1.Rows.Clear();
             DataGridViewRow[] rows = new DataGridViewRow[showing.Count];
-            await Task.Run(()=> 
+            await Task.Run(() =>
             {
+                if (showing.Count == 0)
+                    return;
                 double prevUnixTime = showing.First().UnixTime;
                 for (int i = 0; i < showing.Count; i++)
                 {
@@ -86,7 +88,7 @@ namespace Log_Analyzer
                 timer1.Enabled = false;
                 lapse++;
                 dot += '.';
-                if(lapse % 4 == 0)
+                if (lapse % 4 == 0)
                 {
                     lapse = 0;
                     dot = "";
@@ -116,6 +118,91 @@ namespace Log_Analyzer
                     return String.Format(format, limit.ToString("F1"));
                 else
                     return String.Format(format, limit.ToString());
+            }
+        }
+
+        private async void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dataGridView1.Rows.Count <= e.RowIndex || e.RowIndex < 0)
+                return;
+            if (dataGridView1.Rows[e.RowIndex].Cells.Count <= e.ColumnIndex || e.ColumnIndex < 0)
+                return;
+            object data = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+            if (data == null)
+                return;
+            switch (e.ColumnIndex)
+            {
+                case 0:
+                    //DateTime
+                    return;
+                case 1:
+                    //UnixTime
+                    return;
+                case 2:
+                    //Interval
+                    return;
+                case 3:
+                    //ProcessID
+                    showing = showing.Where(x => x.ProcessID == (int)data).ToList();
+                    break;
+                case 4:
+                    //UserAddress
+                    showing = showing.Where(x => x.UserAddress == (string)data).ToList();
+                    break;
+                case 5:
+                    //Action
+                    showing = showing.Where(x => x.Action == (string)data).ToList();
+                    break;
+                case 6:
+                    //UnknownNum
+                    return;
+                case 7:
+                    //Status
+                    showing = showing.Where(x => x.Status == (string)data).ToList();
+                    break;
+                case 8:
+                    //URL
+                    showing = showing.Where(x => x.Url == (string)data).ToList();
+                    break;
+                case 9:
+                    //UserID
+                    showing = showing.Where(x => x.UserID == (string)data).ToList();
+                    break;
+                case 10:
+                    //ProxyStatus
+                    showing = showing.Where(x => x.ProxyStatus == (string)data).ToList();
+                    break;
+                case 11:
+                    //DocumentType
+                    showing = showing.Where(x => x.DocumentType == (string)data).ToList();
+                    break;
+            }
+            await ShowData();
+        }
+
+        public class TranslucentPanel : Panel
+        {
+            public TranslucentPanel()
+            {
+                SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
+            }
+
+            protected override CreateParams CreateParams
+            {
+                get
+                {
+                    var result = base.CreateParams;
+                    result.ExStyle |= 0x20;
+                    return result;
+                }
+            }
+
+            protected override void OnPaintBackground(PaintEventArgs e)
+            {
+                using (var brush = new SolidBrush(BackColor))
+                {
+                    e.Graphics.FillRectangle(brush, e.ClipRectangle);
+                }
             }
         }
     }
