@@ -130,11 +130,11 @@ namespace Log_Analyzer
             object data = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             if (data == null)
                 return;
-            var target = Array.IndexOf(LogData.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
+            var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
 
             showing = showing.Where(x =>
             {
-                x.Data.TryGetValue(LogData.Keys[target], out var v);
+                x.Data.TryGetValue(LogAnalyzer.Keys[target], out var v);
                 return v == (string)data;
             }).ToList();
 

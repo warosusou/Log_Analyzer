@@ -13,64 +13,30 @@ namespace Log_Analyzer
         public double UnixTime { get; }
         public ReadOnlyDictionary<string, string> Data { get { return new ReadOnlyDictionary<string, string>(_Data); } }
         private Dictionary<string, string> _Data;
-        private static List<string> noFilteringName = new List<string> { "UnknownNum" };
-
-        public static string[] Keys = {"ProcessID",
-                                       "UserAddress",
-                                       "Action",
-                                       "UnknownNum",
-                                       "Status",
-                                       "URL",
-                                       "UserID",
-                                       "ProxyStatus",
-                                       "DocumentType"};
-
-        public static ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
 
         public LogData(double unixTime, Dictionary<string, string> data)
         {
-            if (data.Count != LogData.Keys.Length)
+            if (data.Count < LogAnalyzer.Keys.Length)
             {
-                var s = new List<string>(LogData.Keys);
+                var s = new List<string>(LogAnalyzer.Keys);
                 foreach (var d in data)
                 {
                     s.Remove(d.Key);
                 }
-                throw new DataItemShortageException(s.ToArray());
+                throw new LogDataException(s.ToArray(), true);
+            }
+            else if (data.Count < LogAnalyzer.Keys.Length)
+            {
+                var dataKeys = new List<string>(data.Keys);
+                foreach (var k in LogAnalyzer.Keys)
+                {
+                    dataKeys.Remove(k);
+                }
+                throw new LogDataException(dataKeys.ToArray(), false);
             }
             DateTimeOffset = DateTimeOffset.FromUnixTimeSeconds((long)unixTime).ToLocalTime();
             UnixTime = unixTime;
             _Data = data;
-        }
-
-        internal static void AddNoFilteringName(string[] names)
-        {
-            foreach (var n in names)
-            {
-                if (LogData.Keys.Contains(n) && !LogData.noFilteringName.Contains(n))
-                    noFilteringName.Add(n);
-            }
-        }
-
-        private static ReadOnlyCollection<int> GetNoFilteringIndexes()
-        {
-            var result = new List<int>();
-            foreach (var n in noFilteringName)
-            {
-                result.Add(Array.IndexOf(LogData.Keys, n));
-            }
-            return new ReadOnlyCollection<int>(result);
-        }
-    }
-
-    class DataItemShortageException : Exception
-    {
-        public string[] Shortage { get; }
-        public override string Message { get { return "LogDataに必要な情報が足りません"; } }
-
-        public DataItemShortageException(string[] shortage)
-        {
-            this.Shortage = shortage;
         }
     }
 }
