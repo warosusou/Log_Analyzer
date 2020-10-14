@@ -130,80 +130,15 @@ namespace Log_Analyzer
             object data = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             if (data == null)
                 return;
-            switch (e.ColumnIndex)
+            var target = Array.IndexOf(LogData.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
+
+            showing = showing.Where(x =>
             {
-                case 0:
-                    //DateTime
-                    return;
-                case 1:
-                    //UnixTime
-                    return;
-                case 2:
-                    //Interval
-                    return;
-                case 3:
-                    //ProcessID
-                    showing = showing.Where(x => x.ProcessID == (int)data).ToList();
-                    break;
-                case 4:
-                    //UserAddress
-                    showing = showing.Where(x => x.UserAddress == (string)data).ToList();
-                    break;
-                case 5:
-                    //Action
-                    showing = showing.Where(x => x.Action == (string)data).ToList();
-                    break;
-                case 6:
-                    //UnknownNum
-                    return;
-                case 7:
-                    //Status
-                    showing = showing.Where(x => x.Status == (string)data).ToList();
-                    break;
-                case 8:
-                    //URL
-                    showing = showing.Where(x => x.Url == (string)data).ToList();
-                    break;
-                case 9:
-                    //UserID
-                    showing = showing.Where(x => x.UserID == (string)data).ToList();
-                    break;
-                case 10:
-                    //ProxyStatus
-                    showing = showing.Where(x => x.ProxyStatus == (string)data).ToList();
-                    break;
-                case 11:
-                    //DocumentType
-                    showing = showing.Where(x => x.DocumentType == (string)data).ToList();
-                    break;
-            }
+                x.Data.TryGetValue(LogData.Keys[target], out var v);
+                return v == (string)data;
+            }).ToList();
+
             await ShowData();
-        }
-
-        public class TranslucentPanel : Panel
-        {
-            public TranslucentPanel()
-            {
-                SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
-            }
-
-            protected override CreateParams CreateParams
-            {
-                get
-                {
-                    var result = base.CreateParams;
-                    result.ExStyle |= 0x20;
-                    return result;
-                }
-            }
-
-            protected override void OnPaintBackground(PaintEventArgs e)
-            {
-                using (var brush = new SolidBrush(BackColor))
-                {
-                    e.Graphics.FillRectangle(brush, e.ClipRectangle);
-                }
-            }
         }
     }
 }
