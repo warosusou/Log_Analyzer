@@ -43,20 +43,18 @@ namespace Log_Analyzer
                 if (showing.Count == 0)
                     return;
                 double prevUnixTime = showing.First().UnixTime;
+                int nonDictionaryDataCount = 3;
                 for (int i = 0; i < showing.Count; i++)
                 {
-                    object[] cellValues = new object[]{ showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss"),
-                                                    showing[i].UnixTime,
-                                                    IntervalToString(showing[i].UnixTime - prevUnixTime),
-                                                    showing[i].ProcessID,
-                                                    showing[i].UserAddress,
-                                                    showing[i].Action,
-                                                    showing[i].UnknownNum,
-                                                    showing[i].Status,
-                                                    showing[i].Url,
-                                                    showing[i].UserID,
-                                                    showing[i].ProxyStatus,
-                                                    showing[i].DocumentType };
+                    object[] cellValues = new object[nonDictionaryDataCount + LogAnalyzer.Keys.Count()];
+                    cellValues[0] = showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss");
+                    cellValues[1] = showing[i].UnixTime;
+                    cellValues[2] = IntervalToString(showing[i].UnixTime - prevUnixTime);
+                    for(int j = nonDictionaryDataCount;j < LogAnalyzer.Keys.Count() - nonDictionaryDataCount;j++)
+                    {
+                        showing[i].Data.TryGetValue(LogAnalyzer.Keys[j - nonDictionaryDataCount],out var value);
+                        cellValues[j] = value;
+                    }
                     prevUnixTime = showing[i].UnixTime;
                     DataGridViewRow row = new DataGridViewRow();
                     row.CreateCells(dataGridView1);
@@ -130,15 +128,37 @@ namespace Log_Analyzer
             object data = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             if (data == null)
                 return;
-            var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
-
-            showing = showing.Where(x =>
+            if(dataGridView1.Columns[e.ColumnIndex].Name == LogAnalyzer.UnixTimeName)
             {
-                x.Data.TryGetValue(LogAnalyzer.Keys[target], out var v);
-                return v == (string)data;
-            }).ToList();
+                showing = showing.Where(x =>
+                {
+                    return x.UnixTime == (int)data;
+                }).ToList();
+            }
+            else
+            {
+                var keyIndex = e.ColumnIndex;
+                if (keyIndex < FindUnixTimeColumnIndex())
+                    keyIndex--;
+                var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[keyIndex].Name);
+                showing = showing.Where(x =>
+                {
+                    x.Data.TryGetValue(LogAnalyzer.Keys[target], out var v);
+                    return v == (string)data;
+                }).ToList();
+            }
 
             await ShowData();
+        }
+
+        private  int FindUnixTimeColumnIndex()
+        {
+            for(int i = 0;i < dataGridView1.Columns.Count; i++)
+            {
+                if (dataGridView1.Columns[i].Name == LogAnalyzer.UnixTimeName)
+                    return i;
+            }
+            return -1;
         }
     }
 }

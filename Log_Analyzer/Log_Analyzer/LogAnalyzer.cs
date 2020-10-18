@@ -10,6 +10,7 @@ namespace Log_Analyzer
 {
     static class LogAnalyzer
     {
+        public const string UnixTimeName = "UnixTime";
         private static List<string> noFilteringName = new List<string> { "UnknownNum" };
         public static ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
         internal static string[] Keys = {"ProcessID",
@@ -31,7 +32,7 @@ namespace Log_Analyzer
             if (loadingOrder == null)
             {
                 loadingOrder = new Dictionary<string, int>();
-                for (int i = 0,j = 0; i < itemCount; i++)
+                for (int i = 0, j = 0; i < itemCount; i++)
                 {
                     if (ignoreIndex.Contains(i) || i == unixTimeOrder)
                         continue;
@@ -52,7 +53,7 @@ namespace Log_Analyzer
                 if (data.Length != itemCount)
                     error = true;
                 error = !double.TryParse(data[unixTimeOrder], out var unixTime);
-                foreach(var loading in loadingOrder)
+                foreach (var loading in loadingOrder)
                 {
                     stringData.Add(loading.Key, data[loading.Value]);
                 }
