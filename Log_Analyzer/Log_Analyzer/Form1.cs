@@ -18,6 +18,7 @@ namespace Log_Analyzer
         private List<LogData> source;
         private List<LogData> showing;
         private string waitingBaseText;
+        private int[] generatedColumns = { 0, 2 };
 
         public Form1()
         {
@@ -50,9 +51,9 @@ namespace Log_Analyzer
                     cellValues[0] = showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss");
                     cellValues[1] = showing[i].UnixTime;
                     cellValues[2] = IntervalToString(showing[i].UnixTime - prevUnixTime);
-                    for(int j = nonDictionaryDataCount;j < LogAnalyzer.Keys.Count() - nonDictionaryDataCount;j++)
+                    for (int j = nonDictionaryDataCount; j < LogAnalyzer.Keys.Count() + nonDictionaryDataCount; j++)
                     {
-                        showing[i].Data.TryGetValue(LogAnalyzer.Keys[j - nonDictionaryDataCount],out var value);
+                        showing[i].Data.TryGetValue(LogAnalyzer.Keys[j - nonDictionaryDataCount], out var value);
                         cellValues[j] = value;
                     }
                     prevUnixTime = showing[i].UnixTime;
@@ -128,19 +129,18 @@ namespace Log_Analyzer
             object data = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             if (data == null)
                 return;
-            if(dataGridView1.Columns[e.ColumnIndex].Name == LogAnalyzer.UnixTimeName)
+            if (e.ColumnIndex == FindUnixTimeColumnIndex())
             {
                 showing = showing.Where(x =>
                 {
-                    return x.UnixTime == (int)data;
+                    return x.UnixTime == (double)data;
                 }).ToList();
             }
             else
             {
-                var keyIndex = e.ColumnIndex;
-                if (keyIndex < FindUnixTimeColumnIndex())
-                    keyIndex--;
-                var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[keyIndex].Name);
+                if (generatedColumns.Contains(e.ColumnIndex))
+                    return;
+                var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
                 showing = showing.Where(x =>
                 {
                     x.Data.TryGetValue(LogAnalyzer.Keys[target], out var v);
@@ -151,9 +151,9 @@ namespace Log_Analyzer
             await ShowData();
         }
 
-        private  int FindUnixTimeColumnIndex()
+        private int FindUnixTimeColumnIndex()
         {
-            for(int i = 0;i < dataGridView1.Columns.Count; i++)
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
             {
                 if (dataGridView1.Columns[i].Name == LogAnalyzer.UnixTimeName)
                     return i;
