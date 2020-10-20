@@ -16,7 +16,10 @@ namespace Log_Analyzer
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            var title = new TitleForm();
+            Application.Run(title);
+            if (title.LoadingFilePath != "")
+                Application.Run(new Form1(title.LoadingFilePath));
         }
     }
 }

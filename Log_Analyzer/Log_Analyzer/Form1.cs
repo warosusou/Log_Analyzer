@@ -17,19 +17,22 @@ namespace Log_Analyzer
     {
         private List<LogData> source;
         private List<LogData> showing;
+        private string currentFilePath;
         private string waitingBaseText;
         private int[] generatedColumns = { 0, 2 };
 
-        public Form1()
+        public Form1(string path)
         {
             InitializeComponent();
             waitingBaseText = label1.Text;
-            source = LogAnalyzer.Load("1_access.log");
-            showing = source;
+            currentFilePath = path;
         }
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            this.Text = currentFilePath;
+            source = LogAnalyzer.Load(currentFilePath);
+            showing = source;
             await ShowData();
         }
 
@@ -66,7 +69,7 @@ namespace Log_Analyzer
             });
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
-            var menus = new ToolStripMenuItem[LogAnalyzer.Keys.Length];
+            var menus = new ToolStripMenuItem[LogAnalyzer.Keys.Count];
             for (int i = 0; i < menus.Length; i++)
             {
                 menus[i] = new ToolStripMenuItem { Text = LogAnalyzer.Keys[i] };
@@ -154,7 +157,7 @@ namespace Log_Analyzer
             {
                 if (generatedColumns.Contains(e.ColumnIndex))
                     return;
-                var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
+                var target = LogAnalyzer.Keys.IndexOf(dataGridView1.Columns[e.ColumnIndex].Name);
                 showing = LogAnalyzer.KeyFilter(showing, target, (string)data);
             }
 
@@ -166,7 +169,7 @@ namespace Log_Analyzer
             var t = (ToolStripMenuItem)sender;
             if (t == null)
                 return;
-            var index = Array.IndexOf(LogAnalyzer.Keys, t.Text);
+            var index = LogAnalyzer.Keys.IndexOf(t.Text);
             var source = showing.Select(x =>
             {
                 x.Data.TryGetValue(LogAnalyzer.Keys[index],out var s);

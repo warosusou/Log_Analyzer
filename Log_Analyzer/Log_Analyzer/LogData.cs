@@ -16,7 +16,7 @@ namespace Log_Analyzer
 
         public LogData(double unixTime, Dictionary<string, string> data)
         {
-            if (data.Count < LogAnalyzer.Keys.Length)
+            if (data.Count < LogAnalyzer.Keys.Count)
             {
                 var s = new List<string>(LogAnalyzer.Keys);
                 foreach (var d in data)
@@ -25,7 +25,7 @@ namespace Log_Analyzer
                 }
                 throw new LogDataException(s.ToArray(), true);
             }
-            else if (data.Count < LogAnalyzer.Keys.Length)
+            else if (data.Count < LogAnalyzer.Keys.Count)
             {
                 var dataKeys = new List<string>(data.Keys);
                 foreach (var k in LogAnalyzer.Keys)

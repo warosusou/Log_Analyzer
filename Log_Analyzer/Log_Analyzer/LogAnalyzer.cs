@@ -13,7 +13,7 @@ namespace Log_Analyzer
         public const string UnixTimeName = "UnixTime";
         private static List<string> noFilteringName = new List<string> { "UnknownNum" };
         public static ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
-        internal static string[] Keys = {"ProcessID",
+        internal static List<string> Keys = new List<string>{"ProcessID",
                                        "UserAddress",
                                        "Action",
                                        "UnknownNum",
@@ -23,18 +23,18 @@ namespace Log_Analyzer
                                        "ProxyStatus",
                                        "DocumentType"};
         private static Dictionary<string, int> loadingOrder = null;
-        private static List<int> ignoreIndex = new List<int> { 0, 1 };
-        private static int unixTimeOrder = 2;
+        internal static List<int> IgnoringOrder { get; set; } = new List<int> { 0, 1 };
+        internal static int UnixTimeOrder { get; set; } = 2;
 
         public static List<LogData> Load(string filePath)
         {
-            var itemCount = Keys.Length + 1 + ignoreIndex.Count; //+1はunixtime
+            var itemCount = Keys.Count + 1 + IgnoringOrder.Count; //+1はunixtime
             if (loadingOrder == null)
             {
                 loadingOrder = new Dictionary<string, int>();
                 for (int i = 0, j = 0; i < itemCount; i++)
                 {
-                    if (ignoreIndex.Contains(i) || i == unixTimeOrder)
+                    if (IgnoringOrder.Contains(i) || i == UnixTimeOrder)
                         continue;
                     else
                     {
@@ -52,7 +52,7 @@ namespace Log_Analyzer
                 var data = l.Split(' ').Where(x => x != "").ToArray();
                 if (data.Length != itemCount)
                     error = true;
-                error = !double.TryParse(data[unixTimeOrder], out var unixTime);
+                error = !double.TryParse(data[UnixTimeOrder], out var unixTime);
                 foreach (var loading in loadingOrder)
                 {
                     stringData.Add(loading.Key, data[loading.Value]);
@@ -97,7 +97,7 @@ namespace Log_Analyzer
             var result = new List<int>();
             foreach (var n in noFilteringName)
             {
-                result.Add(Array.IndexOf(Keys, n));
+                result.Add(Keys.IndexOf(n));
             }
             return new ReadOnlyCollection<int>(result);
         }
