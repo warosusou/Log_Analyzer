@@ -38,6 +38,7 @@ namespace Log_Analyzer
             Show_Waiting();
             dataGridView1.SuspendLayout();
             dataGridView1.Rows.Clear();
+            menuStrip1.Visible = false;
             DataGridViewRow[] rows = new DataGridViewRow[showing.Count];
             await Task.Run(() =>
             {
@@ -65,6 +66,14 @@ namespace Log_Analyzer
             });
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
+            var menus = new ToolStripMenuItem[LogAnalyzer.Keys.Length];
+            for (int i = 0; i < menus.Length; i++)
+            {
+                menus[i] = new ToolStripMenuItem { Text = LogAnalyzer.Keys[i] };
+                menus[i].Click += FilterMenuItemClicked;
+            }
+            FilterToolStripMenuItem.DropDownItems.AddRange(menus);
+            menuStrip1.Visible = true;
             Close_Waiting();
         }
 
@@ -120,6 +129,16 @@ namespace Log_Analyzer
             }
         }
 
+        private int FindUnixTimeColumnIndex()
+        {
+            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            {
+                if (dataGridView1.Columns[i].Name == LogAnalyzer.UnixTimeName)
+                    return i;
+            }
+            return -1;
+        }
+
         private async void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dataGridView1.Rows.Count <= e.RowIndex || e.RowIndex < 0)
@@ -130,35 +149,35 @@ namespace Log_Analyzer
             if (data == null)
                 return;
             if (e.ColumnIndex == FindUnixTimeColumnIndex())
-            {
-                showing = showing.Where(x =>
-                {
-                    return x.UnixTime == (double)data;
-                }).ToList();
-            }
+                showing = LogAnalyzer.UnixTimeFilter(showing, (double)data);
             else
             {
                 if (generatedColumns.Contains(e.ColumnIndex))
                     return;
                 var target = Array.IndexOf(LogAnalyzer.Keys, dataGridView1.Columns[e.ColumnIndex].Name);
-                showing = showing.Where(x =>
-                {
-                    x.Data.TryGetValue(LogAnalyzer.Keys[target], out var v);
-                    return v == (string)data;
-                }).ToList();
+                showing = LogAnalyzer.KeyFilter(showing, target, (string)data);
             }
 
             await ShowData();
         }
 
-        private int FindUnixTimeColumnIndex()
+        private async void FilterMenuItemClicked(object sender, EventArgs e)
         {
-            for (int i = 0; i < dataGridView1.Columns.Count; i++)
+            var t = (ToolStripMenuItem)sender;
+            if (t == null)
+                return;
+            var index = Array.IndexOf(LogAnalyzer.Keys, t.Text);
+            var source = showing.Select(x =>
             {
-                if (dataGridView1.Columns[i].Name == LogAnalyzer.UnixTimeName)
-                    return i;
-            }
-            return -1;
+                x.Data.TryGetValue(LogAnalyzer.Keys[index],out var s);
+                return s;
+            }).Distinct().ToArray();
+            var filter = new FilteringForm(t.Text,source);
+            filter.ShowDialog();
+            if (filter.SelectedFilter == "")
+                return;
+            showing = LogAnalyzer.KeyFilter(showing, index, filter.SelectedFilter);
+            await ShowData();
         }
     }
 }

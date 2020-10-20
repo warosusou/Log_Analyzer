@@ -26,7 +26,7 @@ namespace Log_Analyzer
         private static List<int> ignoreIndex = new List<int> { 0, 1 };
         private static int unixTimeOrder = 2;
 
-        static public List<LogData> Load(string filePath)
+        public static List<LogData> Load(string filePath)
         {
             var itemCount = Keys.Length + 1 + ignoreIndex.Count; //+1はunixtime
             if (loadingOrder == null)
@@ -64,6 +64,23 @@ namespace Log_Analyzer
                 result.Add(new LogData(unixTime, stringData));
             }
             return result;
+        }
+
+        public static List<LogData> UnixTimeFilter(List<LogData> data, double comparingUnixTime)
+        {
+            return data.Where(x =>
+            {
+                return x.UnixTime == comparingUnixTime;
+            }).ToList();
+        }
+
+        public static List<LogData> KeyFilter(List<LogData> data ,int keyIndex,string comparingString)
+        {
+            return data.Where(x =>
+            {
+                x.Data.TryGetValue(LogAnalyzer.Keys[keyIndex], out var v);
+                return v == comparingString;
+            }).ToList();
         }
 
         internal static void AddNoFilteringName(string[] names)
