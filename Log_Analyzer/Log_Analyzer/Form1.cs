@@ -69,6 +69,7 @@ namespace Log_Analyzer
             });
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
+            FilterToolStripMenuItem.DropDownItems.Clear();
             var menus = new ToolStripMenuItem[LogAnalyzer.Keys.Count];
             for (int i = 0; i < menus.Length; i++)
             {
