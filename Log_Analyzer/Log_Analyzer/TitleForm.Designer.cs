@@ -90,6 +90,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(378, 28);
             this.textBox1.TabIndex = 5;
+            this.textBox1.Text = "t1";
             // 
             // textBox2
             // 
@@ -97,6 +98,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(445, 28);
             this.textBox2.TabIndex = 10;
+            this.textBox2.Text = "t2";
             // 
             // groupBox2
             // 
