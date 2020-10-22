@@ -139,7 +139,7 @@ namespace Log_Analyzer
             if (list.Last() != textBox && textBox.Text == "")
                 RemoveTextBox(list, groupBox, textBox);
             else if (list.Last() == textBox && textBox.Text != "")
-                CreateTextBox(list, groupBox, textBox, keyEventHandler, keyPressEventHandler);
+                CreateTextBox(list, groupBox, keyEventHandler, keyPressEventHandler);
         }
 
         private void RemoveTextBox(List<TextBox> list, GroupBox groupBox, TextBox textBox)
@@ -157,7 +157,7 @@ namespace Log_Analyzer
             list[i].Focus();
         }
 
-        private void CreateTextBox(List<TextBox> list, GroupBox groupBox, TextBox textBox, KeyEventHandler keyEventHandler, KeyPressEventHandler keyPressEventHandler)
+        private void CreateTextBox(List<TextBox> list, GroupBox groupBox, KeyEventHandler keyEventHandler, KeyPressEventHandler keyPressEventHandler)
         {
             var t = new TextBox
             {
