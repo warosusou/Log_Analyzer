@@ -162,8 +162,11 @@ namespace Log_Analyzer
 
         private void CheckTextBoxDeployment(TextBox textBox)
         {
-            button2.Enabled = true;
-            button3.Enabled = true;
+            if (!CreatingScreen)
+            {
+                button2.Enabled = true;
+                button3.Enabled = true;
+            }
             List<TextBox> list;
             GroupBox groupBox;
             KeyEventHandler keyEventHandler;
