@@ -18,6 +18,7 @@ namespace Log_Analyzer
 
         public FilteringForm(string filteringTitle , string[] filteringSources)
         {
+            Array.Sort(filteringSources);
             FilteringSources = filteringSources;
             FilteringTitle = filteringTitle;
             InitializeComponent();
