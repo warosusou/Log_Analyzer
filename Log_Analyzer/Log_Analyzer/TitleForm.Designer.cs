@@ -43,6 +43,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.sampleAlignLabel = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -186,11 +188,31 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // sampleAlignLabel
+            // 
+            this.sampleAlignLabel.AutoSize = true;
+            this.sampleAlignLabel.Location = new System.Drawing.Point(14, 202);
+            this.sampleAlignLabel.Name = "sampleAlignLabel";
+            this.sampleAlignLabel.Size = new System.Drawing.Size(161, 21);
+            this.sampleAlignLabel.TabIndex = 14;
+            this.sampleAlignLabel.Text = "SampleAlignLabel";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(14, 169);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(152, 21);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "logファイルの形式";
+            // 
             // TitleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1532, 865);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.sampleAlignLabel);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label5);
@@ -232,5 +254,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label sampleAlignLabel;
+        private System.Windows.Forms.Label label6;
     }
 }
