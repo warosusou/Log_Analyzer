@@ -20,18 +20,20 @@ namespace Log_Analyzer
         private string currentFilePath;
         private string waitingBaseText;
         private int[] generatedColumns = { 0, 2 };
+        private LogAnalyzer analyzer;
 
-        public Form1(string path)
+        internal Form1(string path,LogAnalyzer analyzer)
         {
             InitializeComponent();
             waitingBaseText = label1.Text;
             currentFilePath = path;
+            this.analyzer = analyzer;
         }
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
             this.Text = currentFilePath;
-            source = LogAnalyzer.Load(currentFilePath);
+            source = analyzer.Load(currentFilePath);
             showing = source;
             await ShowData();
         }
@@ -51,13 +53,13 @@ namespace Log_Analyzer
                 int nonDictionaryDataCount = 3;
                 for (int i = 0; i < showing.Count; i++)
                 {
-                    object[] cellValues = new object[nonDictionaryDataCount + LogAnalyzer.Keys.Count()];
+                    object[] cellValues = new object[nonDictionaryDataCount + analyzer.Keys.Count()];
                     cellValues[0] = showing[i].DateTimeOffset.ToString("yyyy/MM/dd HH:mm:ss");
                     cellValues[1] = showing[i].UnixTime;
                     cellValues[2] = IntervalToString(showing[i].UnixTime - prevUnixTime);
-                    for (int j = nonDictionaryDataCount; j < LogAnalyzer.Keys.Count() + nonDictionaryDataCount; j++)
+                    for (int j = nonDictionaryDataCount; j < analyzer.Keys.Count() + nonDictionaryDataCount; j++)
                     {
-                        showing[i].Data.TryGetValue(LogAnalyzer.Keys[j - nonDictionaryDataCount], out var value);
+                        showing[i].Data.TryGetValue(analyzer.Keys[j - nonDictionaryDataCount], out var value);
                         cellValues[j] = value;
                     }
                     prevUnixTime = showing[i].UnixTime;
@@ -70,10 +72,10 @@ namespace Log_Analyzer
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
             FilterToolStripMenuItem.DropDownItems.Clear();
-            var menus = new ToolStripMenuItem[LogAnalyzer.Keys.Count];
+            var menus = new ToolStripMenuItem[analyzer.Keys.Count];
             for (int i = 0; i < menus.Length; i++)
             {
-                menus[i] = new ToolStripMenuItem { Text = LogAnalyzer.Keys[i] };
+                menus[i] = new ToolStripMenuItem { Text = analyzer.Keys[i] };
                 menus[i].Click += FilterMenuItemClicked;
             }
             FilterToolStripMenuItem.DropDownItems.AddRange(menus);
@@ -153,13 +155,13 @@ namespace Log_Analyzer
             if (data == null)
                 return;
             if (e.ColumnIndex == FindUnixTimeColumnIndex())
-                showing = LogAnalyzer.UnixTimeFilter(showing, (double)data);
+                showing = analyzer.UnixTimeFilter(showing, (double)data);
             else
             {
                 if (generatedColumns.Contains(e.ColumnIndex))
                     return;
-                var target = LogAnalyzer.Keys.IndexOf(dataGridView1.Columns[e.ColumnIndex].Name);
-                showing = LogAnalyzer.KeyFilter(showing, target, (string)data);
+                var target = analyzer.Keys.IndexOf(dataGridView1.Columns[e.ColumnIndex].Name);
+                showing = analyzer.KeyFilter(showing, target, (string)data);
             }
 
             await ShowData();
@@ -170,17 +172,17 @@ namespace Log_Analyzer
             var t = (ToolStripMenuItem)sender;
             if (t == null)
                 return;
-            var index = LogAnalyzer.Keys.IndexOf(t.Text);
+            var index = analyzer.Keys.IndexOf(t.Text);
             var source = showing.Select(x =>
             {
-                x.Data.TryGetValue(LogAnalyzer.Keys[index],out var s);
+                x.Data.TryGetValue(analyzer.Keys[index],out var s);
                 return s;
             }).Distinct().ToArray();
             var filter = new FilteringForm(t.Text,source);
             filter.ShowDialog();
             if (filter.SelectedFilter == "")
                 return;
-            showing = LogAnalyzer.KeyFilter(showing, index, filter.SelectedFilter);
+            showing = analyzer.KeyFilter(showing, index, filter.SelectedFilter);
             await ShowData();
         }
     }

@@ -14,21 +14,21 @@ namespace Log_Analyzer
         public ReadOnlyDictionary<string, string> Data { get { return new ReadOnlyDictionary<string, string>(_Data); } }
         private Dictionary<string, string> _Data;
 
-        public LogData(double unixTime, Dictionary<string, string> data)
+        public LogData(double unixTime, Dictionary<string, string> data,LogAnalyzer analyzer)
         {
-            if (data.Count < LogAnalyzer.Keys.Count)
+            if (data.Count < analyzer.Keys.Count)
             {
-                var s = new List<string>(LogAnalyzer.Keys);
+                var s = new List<string>(analyzer.Keys);
                 foreach (var d in data)
                 {
                     s.Remove(d.Key);
                 }
                 throw new LogDataException(s.ToArray(), true);
             }
-            else if (data.Count < LogAnalyzer.Keys.Count)
+            else if (data.Count < analyzer.Keys.Count)
             {
                 var dataKeys = new List<string>(data.Keys);
-                foreach (var k in LogAnalyzer.Keys)
+                foreach (var k in analyzer.Keys)
                 {
                     dataKeys.Remove(k);
                 }

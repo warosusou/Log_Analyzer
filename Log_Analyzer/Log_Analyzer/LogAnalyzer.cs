@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Log_Analyzer
 {
-    static class LogAnalyzer
+    class LogAnalyzer
     {
         public const string UnixTimeName = "UnixTime";
-        private static List<string> noFilteringName = new List<string> { "UnknownNum" };
-        public static ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
-        internal static List<string> Keys = new List<string>{"ProcessID",
+        private List<string> noFilteringName = new List<string> { "UnknownNum" };
+        public ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
+        internal List<string> Keys = new List<string>{"ProcessID",
                                        "UserAddress",
                                        "Action",
                                        "UnknownNum",
@@ -22,11 +22,11 @@ namespace Log_Analyzer
                                        "UserID",
                                        "ProxyStatus",
                                        "DocumentType"};
-        private static Dictionary<string, int> loadingOrder = null;
-        internal static List<int> IgnoringOrder { get; set; } = new List<int> { 0, 1 };
-        internal static int UnixTimeOrder { get; set; } = 2;
+        private Dictionary<string, int> loadingOrder = null;
+        internal List<int> IgnoringOrder { get; set; } = new List<int> { 0, 1 };
+        internal int UnixTimeOrder { get; set; } = 2;
 
-        public static List<LogData> Load(string filePath)
+        public List<LogData> Load(string filePath)
         {
             var itemCount = Keys.Count + 1 + IgnoringOrder.Count; //+1はunixtime
             if (loadingOrder == null)
@@ -61,12 +61,12 @@ namespace Log_Analyzer
                 {
                     throw new LogDataException(null);
                 }
-                result.Add(new LogData(unixTime, stringData));
+                result.Add(new LogData(unixTime, stringData,this));
             }
             return result;
         }
 
-        public static List<LogData> UnixTimeFilter(List<LogData> data, double comparingUnixTime)
+        public List<LogData> UnixTimeFilter(List<LogData> data, double comparingUnixTime)
         {
             return data.Where(x =>
             {
@@ -74,16 +74,16 @@ namespace Log_Analyzer
             }).ToList();
         }
 
-        public static List<LogData> KeyFilter(List<LogData> data ,int keyIndex,string comparingString)
+        public List<LogData> KeyFilter(List<LogData> data ,int keyIndex,string comparingString)
         {
             return data.Where(x =>
             {
-                x.Data.TryGetValue(LogAnalyzer.Keys[keyIndex], out var v);
+                x.Data.TryGetValue(Keys[keyIndex], out var v);
                 return v == comparingString;
             }).ToList();
         }
 
-        internal static void AddNoFilteringName(string[] names)
+        internal void AddNoFilteringName(string[] names)
         {
             foreach (var n in names)
             {
@@ -92,7 +92,7 @@ namespace Log_Analyzer
             }
         }
 
-        private static ReadOnlyCollection<int> GetNoFilteringIndexes()
+        private ReadOnlyCollection<int> GetNoFilteringIndexes()
         {
             var result = new List<int>();
             foreach (var n in noFilteringName)

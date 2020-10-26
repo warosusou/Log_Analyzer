@@ -22,10 +22,12 @@ namespace Log_Analyzer
         private readonly Color IGNORING_LABEL_COLOR = Color.Red;
         private const string SEPARATING_TEXT = "  ";
         private bool CreatingScreen = false;
+        internal LogAnalyzer Analyzer { get; private set; }
 
-        public TitleForm()
+        internal TitleForm(LogAnalyzer analyzer)
         {
             InitializeComponent();
+            Analyzer = analyzer;
         }
 
         private void TitleForm_Load(object sender, EventArgs e)
@@ -41,11 +43,11 @@ namespace Log_Analyzer
             button3.Enabled = false;
 
             ShowGroupbox1Items();
-            if (LogAnalyzer.IgnoringOrder != null)
+            if (Analyzer.IgnoringOrder != null)
                 ShowGroupbox2Items();
 
             ShowSamples();
-            textBox3.Text = LogAnalyzer.UnixTimeOrder.ToString();
+            textBox3.Text = Analyzer.UnixTimeOrder.ToString();
             textBox3.KeyPress += intBoxes_KeyPress;
             stringBoxes_KeyUp(keyBoxes.Last(), new KeyEventArgs(Keys.None));
             intBoxes_KeyUp(ignoreBoxes.Last(), new KeyEventArgs(Keys.None));
@@ -63,11 +65,11 @@ namespace Log_Analyzer
             int x = textBox1.Location.X;
             int y = textBox1.Location.Y;
             groupBox1.Controls.Clear();
-            for (int i = 0; i < LogAnalyzer.Keys.Count; i++)
+            for (int i = 0; i < Analyzer.Keys.Count; i++)
             {
                 var t = new TextBox
                 {
-                    Text = LogAnalyzer.Keys[i],
+                    Text = Analyzer.Keys[i],
                     Location = new Point(x, y),
                     Size = textBox1.Size
                 };
@@ -85,11 +87,11 @@ namespace Log_Analyzer
             int x = textBox2.Location.X;
             int y = textBox2.Location.Y;
             groupBox2.Controls.Clear();
-            for (int i = 0; i < LogAnalyzer.IgnoringOrder.Count; i++)
+            for (int i = 0; i < Analyzer.IgnoringOrder.Count; i++)
             {
                 var t = new TextBox
                 {
-                    Text = LogAnalyzer.IgnoringOrder[i].ToString(),
+                    Text = Analyzer.IgnoringOrder[i].ToString(),
                     Location = new Point(x, y),
                     Size = textBox2.Size
                 };
@@ -108,7 +110,7 @@ namespace Log_Analyzer
                 foreach (var l in sampleLabels)
                     this.Controls.Remove(l);
             sampleLabels = new List<Label>();
-            var count = LogAnalyzer.IgnoringOrder.Count + 1 + LogAnalyzer.Keys.Count;// +1はUnixTime
+            var count = Analyzer.IgnoringOrder.Count + 1 + Analyzer.Keys.Count;// +1はUnixTime
             int x = sampleAlignLabel.Location.X;
             int y = sampleAlignLabel.Location.Y;
             int dictionaryIndex = 0;
@@ -116,16 +118,16 @@ namespace Log_Analyzer
             {
                 string text = "";
                 sampleLabels.Add(new Label());
-                if (LogAnalyzer.IgnoringOrder.Contains(i))
+                if (Analyzer.IgnoringOrder.Contains(i))
                 {
                     text = IGNORING_LABEL_TEXT;
                     sampleLabels[i].ForeColor = IGNORING_LABEL_COLOR;
                 }
-                else if (i == LogAnalyzer.UnixTimeOrder)
+                else if (i == Analyzer.UnixTimeOrder)
                     text = "UnixTime";
                 else
                 {
-                    text = LogAnalyzer.Keys[dictionaryIndex];
+                    text = Analyzer.Keys[dictionaryIndex];
                     dictionaryIndex++;
                 }
                 sampleLabels[i].Text = String.Format("{{{0}}}{1}", text, SEPARATING_TEXT);
@@ -264,20 +266,20 @@ namespace Log_Analyzer
                 return;
             }
 
-            LogAnalyzer.Keys = new List<string>();
+            Analyzer.Keys = new List<string>();
             for (int i = 0; i < keyBoxes.Count; i++)
             {
                 if (keyBoxes[i].Text != "")
-                    LogAnalyzer.Keys.Add(keyBoxes[i].Text);
+                    Analyzer.Keys.Add(keyBoxes[i].Text);
             }
-            LogAnalyzer.IgnoringOrder = new List<int>();
+            Analyzer.IgnoringOrder = new List<int>();
             foreach (var i in ignoreBoxes)
             {
                 Int32.TryParse(i.Text, out var index);
-                LogAnalyzer.IgnoringOrder.Add(index);
+                Analyzer.IgnoringOrder.Add(index);
             }
             Int32.TryParse(textBox3.Text, out var unixIndex);
-            LogAnalyzer.UnixTimeOrder = unixIndex;
+            Analyzer.UnixTimeOrder = unixIndex;
             CreateScreen();
         }
 
