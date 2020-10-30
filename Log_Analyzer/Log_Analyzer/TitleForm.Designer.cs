@@ -45,8 +45,16 @@
             this.button3 = new System.Windows.Forms.Button();
             this.sampleAlignLabel = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.settingFileLabel = new System.Windows.Forms.Label();
+            this.loadButton = new System.Windows.Forms.Button();
+            this.writeSettingButton = new System.Windows.Forms.Button();
+            this.loadDefaultSettingButton = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -126,7 +134,7 @@
             // 
             this.textBox3.Location = new System.Drawing.Point(935, 273);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(433, 28);
+            this.textBox3.Size = new System.Drawing.Size(585, 28);
             this.textBox3.TabIndex = 11;
             // 
             // label4
@@ -206,11 +214,68 @@
             this.label6.TabIndex = 15;
             this.label6.Text = "logファイルの形式";
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.loadDefaultSettingButton);
+            this.groupBox4.Controls.Add(this.writeSettingButton);
+            this.groupBox4.Controls.Add(this.loadButton);
+            this.groupBox4.Controls.Add(this.settingFileLabel);
+            this.groupBox4.Location = new System.Drawing.Point(935, 12);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(585, 139);
+            this.groupBox4.TabIndex = 16;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "現在の設定";
+            // 
+            // settingFileLabel
+            // 
+            this.settingFileLabel.AutoSize = true;
+            this.settingFileLabel.Location = new System.Drawing.Point(6, 42);
+            this.settingFileLabel.Name = "settingFileLabel";
+            this.settingFileLabel.Size = new System.Drawing.Size(147, 21);
+            this.settingFileLabel.TabIndex = 0;
+            this.settingFileLabel.Text = "settingFileLabel";
+            // 
+            // loadButton
+            // 
+            this.loadButton.Location = new System.Drawing.Point(353, 110);
+            this.loadButton.Name = "loadButton";
+            this.loadButton.Size = new System.Drawing.Size(110, 23);
+            this.loadButton.TabIndex = 2;
+            this.loadButton.Text = "読み込み";
+            this.loadButton.UseVisualStyleBackColor = true;
+            this.loadButton.Click += new System.EventHandler(this.loadButton_Click);
+            // 
+            // writeSettingButton
+            // 
+            this.writeSettingButton.Location = new System.Drawing.Point(469, 110);
+            this.writeSettingButton.Name = "writeSettingButton";
+            this.writeSettingButton.Size = new System.Drawing.Size(110, 23);
+            this.writeSettingButton.TabIndex = 3;
+            this.writeSettingButton.Text = "書き込み";
+            this.writeSettingButton.UseVisualStyleBackColor = true;
+            this.writeSettingButton.Click += new System.EventHandler(this.writeSettingButton_Click);
+            // 
+            // loadDefaultSettingButton
+            // 
+            this.loadDefaultSettingButton.Location = new System.Drawing.Point(6, 110);
+            this.loadDefaultSettingButton.Name = "loadDefaultSettingButton";
+            this.loadDefaultSettingButton.Size = new System.Drawing.Size(170, 23);
+            this.loadDefaultSettingButton.TabIndex = 4;
+            this.loadDefaultSettingButton.Text = "標準設定読み込み";
+            this.loadDefaultSettingButton.UseVisualStyleBackColor = true;
+            this.loadDefaultSettingButton.Click += new System.EventHandler(this.loadDefaultSettingButton_Click);
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // TitleForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1532, 865);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.sampleAlignLabel);
             this.Controls.Add(this.button3);
@@ -232,6 +297,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,5 +323,12 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label sampleAlignLabel;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label settingFileLabel;
+        private System.Windows.Forms.Button loadDefaultSettingButton;
+        private System.Windows.Forms.Button writeSettingButton;
+        private System.Windows.Forms.Button loadButton;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
     }
 }

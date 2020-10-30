@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -18,10 +20,11 @@ namespace Log_Analyzer
         private List<Label> sampleLabels;
         public string LoadingFilePath { get; private set; } = "";
         private const int TEXTBOX_MARGIN = 30;
-        private const string IGNORING_LABEL_TEXT = "ignored";
+        private const string IGNORING_LABEL_TEXT = "ignore";
         private readonly Color IGNORING_LABEL_COLOR = Color.Red;
         private const string SEPARATING_TEXT = "  ";
         private bool CreatingScreen = false;
+        private bool Modified = false;
         internal LogAnalyzer Analyzer { get; private set; }
 
         internal TitleForm(LogAnalyzer analyzer)
@@ -41,6 +44,8 @@ namespace Log_Analyzer
             button1.Enabled = false;
             button2.Enabled = false;
             button3.Enabled = false;
+            settingFileLabel.Text = Analyzer.Name;
+            Modified = false;
 
             ShowGroupbox1Items();
             if (Analyzer.IgnoringOrder != null)
@@ -164,10 +169,12 @@ namespace Log_Analyzer
 
         private void CheckTextBoxDeployment(TextBox textBox)
         {
-            if (!CreatingScreen)
+            if (!CreatingScreen && !Modified)
             {
                 button2.Enabled = true;
                 button3.Enabled = true;
+                settingFileLabel.Text += " - (*)";
+                Modified = true;
             }
             List<TextBox> list;
             GroupBox groupBox;
@@ -242,6 +249,16 @@ namespace Log_Analyzer
 
         private void button2_Click(object sender, EventArgs e)
         {
+            ApplySetting();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            CreateScreen();
+        }
+
+        private void ApplySetting()
+        {
             keyBoxes.Remove(keyBoxes.Last());
             ignoreBoxes.Remove(ignoreBoxes.Last());
             try
@@ -265,26 +282,22 @@ namespace Log_Analyzer
                 MessageBox.Show(String.Format("{0}{1}@{2}", ce.Message, Environment.NewLine, ce.Source), "", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            Analyzer.Keys = new List<string>();
+            var keys = new List<string>();
             for (int i = 0; i < keyBoxes.Count; i++)
             {
                 if (keyBoxes[i].Text != "")
-                    Analyzer.Keys.Add(keyBoxes[i].Text);
+                    keys.Add(keyBoxes[i].Text);
             }
-            Analyzer.IgnoringOrder = new List<int>();
+            var ignoringOrder = new List<int>();
             foreach (var i in ignoreBoxes)
             {
                 Int32.TryParse(i.Text, out var index);
-                Analyzer.IgnoringOrder.Add(index);
+                ignoringOrder.Add(index);
             }
             Int32.TryParse(textBox3.Text, out var unixIndex);
+            Analyzer.Keys = new ReadOnlyCollection<string>(keys);
+            Analyzer.IgnoringOrder = new ReadOnlyCollection<int>(ignoringOrder);
             Analyzer.UnixTimeOrder = unixIndex;
-            CreateScreen();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
             CreateScreen();
         }
 
@@ -297,6 +310,66 @@ namespace Log_Analyzer
                 this.Message = message;
                 this.Source = source;
             }
+        }
+
+        private void loadButton_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "Jsonファイル(*.json)|*.json";
+            openFileDialog1.FileName = "";
+            openFileDialog1.InitialDirectory = Path.Combine(Environment.CurrentDirectory + "setting");
+            openFileDialog1.FileOk += (s, oe) =>
+            {
+                var json = JsonConvert.DeserializeObject<LogAnalyzer>(File.ReadAllText(openFileDialog1.FileName));
+                if (json != null)
+                {
+                    if (Modified)
+                    {
+                        var r = MessageBox.Show("変更を破棄します", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+                        if (r == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+                    }
+                    Analyzer = json;
+                    CreateScreen();
+                }
+            };
+            openFileDialog1.ShowDialog();
+        }
+
+        private void writeSettingButton_Click(object sender, EventArgs e)
+        {
+            if (Modified)
+            {
+                var r = MessageBox.Show("変更を適用します", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+                if (r == DialogResult.Cancel)
+                {
+                    return;
+                }
+                ApplySetting();
+            }
+            saveFileDialog1.Filter = "Jsonファイル(*.json)|*.json";
+            saveFileDialog1.FileName = Analyzer.Name + ".json";
+            saveFileDialog1.InitialDirectory = Path.Combine(Environment.CurrentDirectory, "setting");
+            saveFileDialog1.FileOk += (s, oe) =>
+            {
+                Analyzer.Name = Path.GetFileNameWithoutExtension(saveFileDialog1.FileName);
+                File.WriteAllText(saveFileDialog1.FileName, JsonConvert.SerializeObject(Analyzer));
+                CreateScreen();
+            };
+            saveFileDialog1.ShowDialog();
+        }
+
+        private void loadDefaultSettingButton_Click(object sender, EventArgs e)
+        {
+            var r = MessageBox.Show("標準設定を読み込みます\ndefault.jsonとは異なります", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+            if (r == DialogResult.Cancel)
+            {
+                return;
+            }
+            Analyzer = new LogAnalyzer();
+            CreateScreen();
+            ApplySetting();
         }
     }
 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Log_Analyzer
 {
@@ -12,8 +13,8 @@ namespace Log_Analyzer
     {
         public const string UnixTimeName = "UnixTime";
         private List<string> noFilteringName = new List<string> { "UnknownNum" };
-        public ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
-        internal List<string> Keys = new List<string>{"ProcessID",
+        internal ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
+        private List<string> keys = new List<string>{"ProcessID",
                                        "UserAddress",
                                        "Action",
                                        "UnknownNum",
@@ -23,8 +24,14 @@ namespace Log_Analyzer
                                        "ProxyStatus",
                                        "DocumentType"};
         private Dictionary<string, int> loadingOrder = null;
-        internal List<int> IgnoringOrder { get; set; } = new List<int> { 0, 1 };
-        internal int UnixTimeOrder { get; set; } = 2;
+        private List<int> ignoringOrder = new List<int> { 0, 1 };
+
+        public string Name { get; set; } = "default";
+        public ReadOnlyCollection<string> Keys { get { return new ReadOnlyCollection<string>(keys); } set { keys = value.Distinct().ToList(); } }
+        public ReadOnlyCollection<int> IgnoringOrder { get { return new ReadOnlyCollection<int>(ignoringOrder); } set { ignoringOrder = value.Distinct().ToList(); } }
+        public int UnixTimeOrder { get; set; } = 2;
+
+        
 
         public List<LogData> Load(string filePath)
         {
