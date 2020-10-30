@@ -48,7 +48,10 @@ namespace Log_Analyzer
             await Task.Run(() =>
             {
                 if (showing.Count == 0)
+                {
                     return;
+                }
+                showing = showing.OrderBy(x => x.UnixTime).ToList();
                 double prevUnixTime = showing.First().UnixTime;
                 int nonDictionaryDataCount = 3;
                 for (int i = 0; i < showing.Count; i++)
@@ -72,12 +75,18 @@ namespace Log_Analyzer
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
             FilterToolStripMenuItem.DropDownItems.Clear();
-            var menus = new ToolStripMenuItem[analyzer.Keys.Count];
-            for (int i = 0; i < menus.Length; i++)
+            var menus = new ToolStripMenuItem[analyzer.Keys.Count + 1];
+            for (int i = 0; i < analyzer.Keys.Count; i++)
             {
                 menus[i] = new ToolStripMenuItem { Text = analyzer.Keys[i] };
                 menus[i].Click += FilterMenuItemClicked;
             }
+            menus[menus.Length - 1] = new ToolStripMenuItem { Text = "フィルタ初期化" };
+            menus[menus.Length - 1].Click += async(s, e) => 
+            {
+                showing = source;
+                await ShowData();
+            };
             FilterToolStripMenuItem.DropDownItems.AddRange(menus);
             menuStrip1.Visible = true;
             Close_Waiting();
