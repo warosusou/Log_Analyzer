@@ -22,7 +22,9 @@ namespace Log_Analyzer
             var title = new TitleForm(analyzer);
             Application.Run(title);
             if (title.LoadingFilePath != "")
-                Application.Run(new Form1(title.LoadingFilePath,title.Analyzer));
+            {
+                Application.Run(new Form1(title.LoadingFilePath, title.Analyzer));
+            }
         }
 
         private const string DIR = "settings";

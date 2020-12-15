@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
@@ -21,6 +22,7 @@ namespace Log_Analyzer
         private string waitingBaseText;
         private int[] generatedColumns = { 0, 2 };
         private LogAnalyzer analyzer;
+        private ReadOnlyCollection<string> defaultColumn = new ReadOnlyCollection<string>(new List<string>{ "DateTime", "UnixTime", "Interval" });
 
         internal Form1(string path,LogAnalyzer analyzer)
         {
@@ -35,6 +37,16 @@ namespace Log_Analyzer
             this.Text = currentFilePath;
             source = analyzer.Load(currentFilePath);
             showing = source;
+            var columnNames = new List<string>(defaultColumn);
+            columnNames.AddRange(analyzer.Keys);
+            dataGridView1.Columns.Clear();
+            foreach (var c in columnNames)
+            {
+                var d = new DataGridViewTextBoxColumn();
+                d.HeaderText = c;
+                d.SortMode = DataGridViewColumnSortMode.NotSortable;
+                dataGridView1.Columns.Add(d);
+            }
             await ShowData();
         }
 

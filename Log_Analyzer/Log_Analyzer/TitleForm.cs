@@ -54,8 +54,14 @@ namespace Log_Analyzer
             ShowSamples();
             textBox3.Text = Analyzer.UnixTimeOrder.ToString();
             textBox3.KeyPress += intBoxes_KeyPress;
-            stringBoxes_KeyUp(keyBoxes.Last(), new KeyEventArgs(Keys.None));
-            intBoxes_KeyUp(ignoreBoxes.Last(), new KeyEventArgs(Keys.None));
+            if (keyBoxes.Count != 0)
+            {
+                stringBoxes_KeyUp(keyBoxes.Last(), new KeyEventArgs(Keys.None));
+            }
+            if (ignoreBoxes.Count != 0)
+            {
+                intBoxes_KeyUp(ignoreBoxes.Last(), new KeyEventArgs(Keys.None));
+            }
             listBox1.Items.Clear();
             foreach (var d in Directory.GetFiles("./", "*.log"))
             {
@@ -88,24 +94,27 @@ namespace Log_Analyzer
 
         private void ShowGroupbox2Items()
         {
-            ignoreBoxes = new List<TextBox>();
-            int x = textBox2.Location.X;
-            int y = textBox2.Location.Y;
-            groupBox2.Controls.Clear();
-            for (int i = 0; i < Analyzer.IgnoringOrder.Count; i++)
+            if (Analyzer.IgnoringOrder.Count != 0)
             {
-                var t = new TextBox
+                ignoreBoxes = new List<TextBox>();
+                int x = textBox2.Location.X;
+                int y = textBox2.Location.Y;
+                groupBox2.Controls.Clear();
+                for (int i = 0; i < Analyzer.IgnoringOrder.Count; i++)
                 {
-                    Text = Analyzer.IgnoringOrder[i].ToString(),
-                    Location = new Point(x, y),
-                    Size = textBox2.Size
-                };
-                ignoreBoxes.Add(t);
-                t.KeyPress += intBoxes_KeyPress;
-                t.KeyUp += intBoxes_KeyUp;
-                y += TEXTBOX_MARGIN;
+                    var t = new TextBox
+                    {
+                        Text = Analyzer.IgnoringOrder[i].ToString(),
+                        Location = new Point(x, y),
+                        Size = textBox2.Size
+                    };
+                    ignoreBoxes.Add(t);
+                    t.KeyPress += intBoxes_KeyPress;
+                    t.KeyUp += intBoxes_KeyUp;
+                    y += TEXTBOX_MARGIN;
+                }
+                groupBox2.Controls.AddRange(ignoreBoxes.ToArray());
             }
-            groupBox2.Controls.AddRange(ignoreBoxes.ToArray());
             textBox2.Visible = false;
         }
 
@@ -259,13 +268,12 @@ namespace Log_Analyzer
 
         private void ApplySetting()
         {
-            keyBoxes.Remove(keyBoxes.Last());
-            ignoreBoxes.Remove(ignoreBoxes.Last());
+            var imaginaryIgnoreBoxes = ignoreBoxes.TakeWhile(x => x != ignoreBoxes.Last());
             try
             {
                 if (!Int32.TryParse(textBox3.Text, out var unixTimeOrder))
                     throw new ConfigurationException("数字以外の文字が含まれています", "UnixTimeOrder");
-                foreach (var i in ignoreBoxes)
+                foreach (var i in imaginaryIgnoreBoxes)
                 {
                     if (!Int32.TryParse(i.Text, out var s))
                         throw new ConfigurationException("数字以外の文字が含まれています", "IgnoringOrder");
@@ -283,13 +291,13 @@ namespace Log_Analyzer
                 return;
             }
             var keys = new List<string>();
-            for (int i = 0; i < keyBoxes.Count; i++)
+            for (int i = 0; i < keyBoxes.Count - 1; i++)
             {
                 if (keyBoxes[i].Text != "")
                     keys.Add(keyBoxes[i].Text);
             }
             var ignoringOrder = new List<int>();
-            foreach (var i in ignoreBoxes)
+            foreach (var i in imaginaryIgnoreBoxes)
             {
                 Int32.TryParse(i.Text, out var index);
                 ignoringOrder.Add(index);
