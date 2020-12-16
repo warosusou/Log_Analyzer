@@ -44,6 +44,7 @@ namespace Log_Analyzer
             {
                 var d = new DataGridViewTextBoxColumn();
                 d.HeaderText = c;
+                d.Name = c;
                 d.SortMode = DataGridViewColumnSortMode.NotSortable;
                 dataGridView1.Columns.Add(d);
             }
