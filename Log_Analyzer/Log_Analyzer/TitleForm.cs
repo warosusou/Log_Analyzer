@@ -49,7 +49,9 @@ namespace Log_Analyzer
 
             ShowGroupbox1Items();
             if (Analyzer.IgnoringOrder != null)
+            {
                 ShowGroupbox2Items();
+            }
 
             ShowSamples();
             textBox3.Text = Analyzer.UnixTimeOrder.ToString();
@@ -58,7 +60,7 @@ namespace Log_Analyzer
             {
                 stringBoxes_KeyUp(keyBoxes.Last(), new KeyEventArgs(Keys.None));
             }
-            if (ignoreBoxes.Count != 0)
+            if (ignoreBoxes != null && ignoreBoxes.Count != 0)
             {
                 intBoxes_KeyUp(ignoreBoxes.Last(), new KeyEventArgs(Keys.None));
             }
@@ -94,12 +96,24 @@ namespace Log_Analyzer
 
         private void ShowGroupbox2Items()
         {
-            if (Analyzer.IgnoringOrder.Count != 0)
+            ignoreBoxes = new List<TextBox>();
+            int x = textBox2.Location.X;
+            int y = textBox2.Location.Y;
+            groupBox2.Controls.Clear();
+            if (Analyzer.IgnoringOrder.Count == 0)
             {
-                ignoreBoxes = new List<TextBox>();
-                int x = textBox2.Location.X;
-                int y = textBox2.Location.Y;
-                groupBox2.Controls.Clear();
+                var t = new TextBox
+                {
+                    Text = "",
+                    Location = new Point(textBox2.Location.X, textBox2.Location.Y),
+                    Size = textBox2.Size
+                };
+                ignoreBoxes.Add(t);
+                t.KeyPress += intBoxes_KeyPress;
+                t.KeyUp += intBoxes_KeyUp;
+            }
+            else
+            {
                 for (int i = 0; i < Analyzer.IgnoringOrder.Count; i++)
                 {
                     var t = new TextBox
@@ -113,8 +127,8 @@ namespace Log_Analyzer
                     t.KeyUp += intBoxes_KeyUp;
                     y += TEXTBOX_MARGIN;
                 }
-                groupBox2.Controls.AddRange(ignoreBoxes.ToArray());
             }
+            groupBox2.Controls.AddRange(ignoreBoxes.ToArray());
             textBox2.Visible = false;
         }
 

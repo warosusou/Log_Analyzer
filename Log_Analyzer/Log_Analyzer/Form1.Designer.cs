@@ -69,12 +69,12 @@
             this.ProxyStatus,
             this.DocumentType});
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 38);
+            this.dataGridView1.Location = new System.Drawing.Point(0, 36);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 72;
             this.dataGridView1.RowTemplate.Height = 30;
-            this.dataGridView1.Size = new System.Drawing.Size(2111, 966);
+            this.dataGridView1.Size = new System.Drawing.Size(1919, 825);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
             // 
@@ -181,9 +181,9 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.pictureBox1.Location = new System.Drawing.Point(956, 429);
+            this.pictureBox1.Location = new System.Drawing.Point(869, 368);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(509, 279);
+            this.pictureBox1.Size = new System.Drawing.Size(463, 239);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
@@ -192,9 +192,9 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.label1.Font = new System.Drawing.Font("MS UI Gothic", 20.14286F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(1080, 504);
+            this.label1.Location = new System.Drawing.Point(982, 432);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(278, 48);
+            this.label1.Size = new System.Drawing.Size(237, 41);
             this.label1.TabIndex = 2;
             this.label1.Text = "お待ちください";
             // 
@@ -206,21 +206,22 @@
             this.FilterToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(2111, 38);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1919, 36);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // FilterToolStripMenuItem
             // 
             this.FilterToolStripMenuItem.Name = "FilterToolStripMenuItem";
-            this.FilterToolStripMenuItem.Size = new System.Drawing.Size(90, 34);
+            this.FilterToolStripMenuItem.Size = new System.Drawing.Size(80, 32);
             this.FilterToolStripMenuItem.Text = "フィルタ";
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(2111, 1004);
+            this.ClientSize = new System.Drawing.Size(1919, 861);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.dataGridView1);
