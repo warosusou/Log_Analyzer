@@ -72,6 +72,12 @@
     <Compile Include="TitleForm.Designer.cs">
       <DependentUpon>TitleForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UnixTimeFilteringForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UnixTimeFilteringForm.Designer.cs">
+      <DependentUpon>UnixTimeFilteringForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FilteringForm.resx">
       <DependentUpon>FilteringForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -89,6 +95,9 @@
     </Compile>
     <EmbeddedResource Include="TitleForm.resx">
       <DependentUpon>TitleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnixTimeFilteringForm.resx">
+      <DependentUpon>UnixTimeFilteringForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

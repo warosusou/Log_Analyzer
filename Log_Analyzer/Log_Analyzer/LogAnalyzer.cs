@@ -73,14 +73,6 @@ namespace Log_Analyzer
             return result;
         }
 
-        public List<LogData> UnixTimeFilter(List<LogData> data, double comparingUnixTime)
-        {
-            return data.Where(x =>
-            {
-                return x.UnixTime == comparingUnixTime;
-            }).ToList();
-        }
-
         public List<LogData> KeyFilter(List<LogData> data ,int keyIndex,string comparingString)
         {
             return data.Where(x =>

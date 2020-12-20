@@ -88,10 +88,13 @@ namespace Log_Analyzer
             dataGridView1.Rows.AddRange(rows);
             dataGridView1.ResumeLayout();
             FilterToolStripMenuItem.DropDownItems.Clear();
-            var menus = new ToolStripMenuItem[analyzer.Keys.Count + 1];
-            for (int i = 0; i < analyzer.Keys.Count; i++)
+            int preAnalyzerKeysLength = 1;
+            var menus = new ToolStripMenuItem[preAnalyzerKeysLength + analyzer.Keys.Count + 1];//unixtime + keys + 初期化
+            menus[0] = new ToolStripMenuItem { Text = "UnixTime" };
+            menus[0].Click += FilterMenuItemClicked;
+            for (int i = preAnalyzerKeysLength; i < analyzer.Keys.Count + preAnalyzerKeysLength; i++)
             {
-                menus[i] = new ToolStripMenuItem { Text = analyzer.Keys[i] };
+                menus[i] = new ToolStripMenuItem { Text = analyzer.Keys[i - preAnalyzerKeysLength] };
                 menus[i].Click += FilterMenuItemClicked;
             }
             menus[menus.Length - 1] = new ToolStripMenuItem { Text = "フィルタ初期化" };
@@ -177,7 +180,17 @@ namespace Log_Analyzer
             if (data == null)
                 return;
             if (e.ColumnIndex == FindUnixTimeColumnIndex())
-                showing = analyzer.UnixTimeFilter(showing, (double)data);
+            {
+                var result = UnixTimeFiltering((double)data,showing.Last().UnixTime);
+                if(result == null)
+                {
+                    return;
+                }
+                else
+                {
+                    showing = result;
+                }
+            }
             else
             {
                 if (generatedColumns.Contains(e.ColumnIndex))
@@ -194,18 +207,54 @@ namespace Log_Analyzer
             var t = (ToolStripMenuItem)sender;
             if (t == null)
                 return;
-            var index = analyzer.Keys.IndexOf(t.Text);
-            var source = showing.Select(x =>
+            if (t.Text == "UnixTime")
             {
-                x.Data.TryGetValue(analyzer.Keys[index],out var s);
-                return s;
-            }).Distinct().ToArray();
-            var filter = new FilteringForm(t.Text,source);
-            filter.ShowDialog();
-            if (filter.SelectedFilter == "")
-                return;
-            showing = analyzer.KeyFilter(showing, index, filter.SelectedFilter);
+                var result = UnixTimeFiltering();
+                if(result == null)
+                {
+                    return;
+                }
+                else
+                {
+                    showing = result;
+                }
+            }
+            else
+            {
+                var index = analyzer.Keys.IndexOf(t.Text);
+                var source = showing.Select(x =>
+                {
+                    x.Data.TryGetValue(analyzer.Keys[index], out var s);
+                    return s;
+                }).Distinct().ToArray();
+                var filter = new FilteringForm(t.Text, source);
+                filter.ShowDialog();
+                if (filter.SelectedFilter == "")
+                    return;
+                showing = analyzer.KeyFilter(showing, index, filter.SelectedFilter);
+            }
             await ShowData();
+        }
+
+        private List<LogData> UnixTimeFiltering(double firstUnixTime,double lastUnixTime)
+        {
+            var ut = new UnixTimeFilteringForm(firstUnixTime, lastUnixTime);
+            ut.ShowDialog();
+            if (ut.First == null || ut.Last == null)
+            {
+                return null;
+            }
+            else
+            {
+                var first = (double)(new DateTimeOffset(ut.First.Value.Ticks, new TimeSpan(+9, 00, 00)).ToUnixTimeMilliseconds()) / 1000;
+                var last= (double)(new DateTimeOffset(ut.Last.Value.Ticks, new TimeSpan(+9, 00, 00)).ToUnixTimeMilliseconds()) / 1000;
+                return showing.Where(x => x.UnixTime >= first && x.UnixTime <= last).ToList();
+            }
+        }
+
+        private List<LogData> UnixTimeFiltering()
+        {
+            return UnixTimeFiltering(showing.First().UnixTime, showing.Last().UnixTime);
         }
     }
 }
