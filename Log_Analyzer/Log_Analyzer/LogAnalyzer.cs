@@ -14,22 +14,19 @@ namespace Log_Analyzer
         public const string UnixTimeName = "UnixTime";
         private List<string> noFilteringName = new List<string> { "UnknownNum" };
         internal ReadOnlyCollection<int> NoFiltering { get { return GetNoFilteringIndexes(); } }
-        private List<string> keys = new List<string>{"ProcessID",
-                                       "UserAddress",
+        private List<string> keys = new List<string>{"UserID",
+                                       "DestinationAddress",
+                                       "ProxyAddress",
                                        "Action",
-                                       "UnknownNum",
                                        "Status",
-                                       "URL",
-                                       "UserID",
-                                       "ProxyStatus",
-                                       "DocumentType"};
+                                       "URL"};
         private Dictionary<string, int> loadingOrder = null;
-        private List<int> ignoringOrder = new List<int> { 0, 1 };
+        private List<int> ignoringOrder = new List<int> { };
 
         public string Name { get; set; } = "default";
         public ReadOnlyCollection<string> Keys { get { return new ReadOnlyCollection<string>(keys); } set { keys = value.Distinct().ToList(); } }
         public ReadOnlyCollection<int> IgnoringOrder { get { return new ReadOnlyCollection<int>(ignoringOrder); } set { ignoringOrder = value.Distinct().ToList(); } }
-        public int UnixTimeOrder { get; set; } = 2;
+        public int UnixTimeOrder { get; set; } = 0;
 
         
 

@@ -31,6 +31,13 @@ namespace Log_Analyzer
         {
             InitializeComponent();
             Analyzer = analyzer;
+            #region titleMessageDisappear
+            /*
+            label1.Visible = false;
+            label2.Visible = false;
+            label3.Visible = false;
+            */
+            #endregion
         }
 
         private void TitleForm_Load(object sender, EventArgs e)
